@@ -1,0 +1,5 @@
+{
+	"storagePath" : "/path/to/store/notes/",
+	"editor" : "vi",
+	"editorArgs" : "+normal G$"
+}
