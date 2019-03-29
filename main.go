@@ -6,9 +6,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"os/exec"
 	"strings"
-	"time"
+	"pwr/pwr_functions"
 )
 
 type config struct {
@@ -42,12 +41,26 @@ func main() {
 	//check(err)
 
 	if len(args) == 0 || strings.ToLower(args[0]) == "today" {
-		openTodayNote(storagePath, editor, editorArgs)
+		pwrf.OpenTodayNote(storagePath, editor, editorArgs)
 	}
 
-	if len(args) != 0 && strings.ToLower(args[0]) != "today" {
-		openNamedNote(storagePath, strings.ToLower(args[0]), editor, editorArgs)
+	if len(args) != 0 {
+		switch strings.ToLower(args[0]) {
+		case "yesterday":
+			pwrf.OpenYesterdayNote(storagePath, editor, editorArgs)
+		default:
+			pwrf.OpenNamedNote(storagePath, strings.ToLower(args[0]), editor, editorArgs)
+		}
 	}
+
+
+//|| strings.ToLower(args[0]) == "yesterday" {
+//		pwrf.OpenYesterdayNote(storagePath, editor, editorArgs)
+//	}
+
+//	if len(args) != 0 && strings.ToLower(args[0]) != "today" {
+//		pwrf.OpenNamedNote(storagePath, strings.ToLower(args[0]), editor, editorArgs)
+//	}
 
 	_ = confFlag
 	fmt.Println("")
@@ -59,49 +72,7 @@ func check(err error) {
 	}
 }
 
-func checkFileExists(p string, n string) string {
-	// Implement checking p as filesystem path using `os`
-	// Also, check out https://stackoverflow.com/questions/12518876/how-to-check-if-a-file-exists-in-go/22483001#22483001
-	foldername := p + n + "/"
-	filename := foldername + n + ".md"
-	err := os.MkdirAll(foldername, 0700)
-	check(err)
-	f, err := os.OpenFile(filename, os.O_RDWR|os.O_CREATE, 0600)
-	check(err)
-	defer f.Close()
 
-	fi, err := f.Stat()
-	check(err)
-	if fi.Size() == 0 {
-		_, err = f.WriteString("# " + n + "\n\n\n")
-		check(err)
-	}
-	f.Sync()
-	return filename
-}
-
-func openTodayNote(store, ed, edA string) {
-	now := time.Now()
-	dateStr := now.Format("2006-01-02")
-	filepath := checkFileExists(store, dateStr)
-	cmd := exec.Command(ed, edA, filepath)
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	err := cmd.Run()
-	check(err)
-}
-
-func openNamedNote(store, name, ed, edA string) {
-	// Not implemented yet
-	filepath := checkFileExists(store, name)
-	cmd := exec.Command(ed, edA, filepath)
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	err := cmd.Run()
-	check(err)
-}
 
 func setupFlags(f *flag.FlagSet) {
 	f.Usage = func() {
