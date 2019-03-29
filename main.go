@@ -95,24 +95,22 @@ func openTodayNote(store, ed, edA string) {
 func openNamedNote(store, name, ed, edA string) {
 	// Not implemented yet
 	filepath := checkFileExists(store, name)
-	fmt.Println("-----------------------\n", store, name, ed, edA, filepath)
 	cmd := exec.Command(ed, edA, filepath)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	err := cmd.Run()
 	check(err)
-	fmt.Println("-----------------------\n", store, name, ed, edA, filepath)
 }
 
 func setupFlags(f *flag.FlagSet) {
 	f.Usage = func() {
-		fmt.Println("\nSHIEET MY MAN")
+		fmt.Println("\nSome Message")
 
 		fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
 		f.PrintDefaults()
 
-		fmt.Println("\nExaplanetory stuffz")
+		fmt.Println("\nExaplanatory stuff")
 	}
 }
 
