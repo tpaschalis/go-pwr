@@ -1,4 +1,4 @@
-#pwr
+# pwr
 
 This is a utility I'm building to learn Go, ease the habit of taking structured notes using Markdown, and rendering them into a concise library for easy reference.
 
