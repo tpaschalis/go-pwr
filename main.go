@@ -110,7 +110,7 @@ func setupFlags(f *flag.FlagSet) {
 		fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
 		f.PrintDefaults()
 
-		fmt.Println("\nExaplanatory stuff")
+		fmt.Println("\nExplanatory stuff")
 	}
 }
 
