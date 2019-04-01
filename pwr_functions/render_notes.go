@@ -38,7 +38,8 @@ func BuildIndex(store, templates string) {
 	for _, file := range fileInfo {
 
 		if file.IsDir() && noteExists(store, file.Name()) == nil {
-			address := store + file.Name() + "/" + file.Name() + ".html"
+			//address := store + file.Name() + "/" + file.Name() + ".html"
+			address := file.Name() + "/" + file.Name() + ".html"
 			if re.MatchString(file.Name()) {
 				indexData.Calendar = append(indexData.Calendar, Link{file.Name(), address})
 			} else {
