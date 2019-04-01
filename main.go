@@ -18,6 +18,7 @@ type config struct {
 func main() {
 	setupFlags(flag.CommandLine)
 	confFlag := flag.String("c", "", "-c					Change path for config.json")
+	renderFlag := flag.Bool("v", false, "-v                    Render notes so they're accessible by a browser")
 
 	flag.Parse()
 	args := flag.Args()
@@ -35,10 +36,15 @@ func main() {
 	storagePath := conf["storagePath"].(string)
 	editor := conf["editor"].(string)
 	editorArgs := conf["editorArgs"].(string)
-	fmt.Println(editor, editorArgs)
 
+	//fmt.Println(editor, editorArgs)
 	//err = checkEarlyExit(args, *confFlag)
 	//check(err)
+	if *renderFlag == true {
+		pwrf.BuildIndex(storagePath)
+		pwrf.RenderNotes(storagePath)
+		os.Exit(0)
+	}
 
 	if len(args) == 0 || strings.ToLower(args[0]) == "today" {
 		pwrf.OpenTodayNote(storagePath, editor, editorArgs)
@@ -54,13 +60,8 @@ func main() {
 	}
 
 
-//|| strings.ToLower(args[0]) == "yesterday" {
-//		pwrf.OpenYesterdayNote(storagePath, editor, editorArgs)
-//	}
 
-//	if len(args) != 0 && strings.ToLower(args[0]) != "today" {
-//		pwrf.OpenNamedNote(storagePath, strings.ToLower(args[0]), editor, editorArgs)
-//	}
+
 
 	_ = confFlag
 	fmt.Println("")

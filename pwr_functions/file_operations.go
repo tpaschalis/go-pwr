@@ -5,7 +5,7 @@ import "os/exec"
 import "time"
 
 func CheckFileExists(p string, n string) string {
-	// Implement checking p as filesystem path using `os`
+	// todo : Implement checking p as filesystem path using `os`
 	// Also, check out https://stackoverflow.com/questions/12518876/how-to-check-if-a-file-exists-in-go/22483001#22483001
 	foldername := p + n + "/"
 	filename := foldername + n + ".md"
