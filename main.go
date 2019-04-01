@@ -34,6 +34,7 @@ func main() {
 	err = json.Unmarshal(byt, &conf)
 	check(err)
 	storagePath := conf["storagePath"].(string)
+	templatesPath := conf["templatesPath"].(string)
 	editor := conf["editor"].(string)
 	editorArgs := conf["editorArgs"].(string)
 
@@ -41,8 +42,8 @@ func main() {
 	//err = checkEarlyExit(args, *confFlag)
 	//check(err)
 	if *renderFlag == true {
-		pwrf.BuildIndex(storagePath)
-		pwrf.RenderNotes(storagePath)
+		pwrf.BuildIndex(storagePath, templatesPath)
+		pwrf.RenderNotes(storagePath, templatesPath)
 		os.Exit(0)
 	}
 

@@ -4,70 +4,99 @@ import "fmt"
 import "gopkg.in/russross/blackfriday.v2"
 import "os"
 import "io/ioutil"
+import "html/template"
+import "regexp"
 
-type note struct {
-	title string
-	body string
+type Page struct {
+	Title string
+	Body  template.HTML
 }
-func BuildIndex(store string) {
+
+type Index struct {
+	Title string
+	Calendar []Link
+	Misc []Link
+}
+
+type Link struct {
+	Name string
+	Address string
+}
+
+func BuildIndex(store, templates string) {
 	f, err := os.Open(store)
 	check(err)
 	fileInfo, err := f.Readdir(-1)
 	f.Close()
 	check(err)
 
-	var allNotes []string
+	re := regexp.MustCompile(`\d{4}-\d{2}-\d{2}`)
+	//fmt.Printf("Pattern: %v\n", re.String())
+
+	var indexData Index
+	indexData.Title = "NotezIndex"
 	for _, file := range fileInfo {
+
 		if file.IsDir() && noteExists(store, file.Name()) == nil {
-			currentLink := store + file.Name() + "/" + file.Name() + ".html"
-			allNotes = append(allNotes, currentLink)
+			address := store + file.Name() + "/" + file.Name() + ".html"
+			if re.MatchString(file.Name()) {
+				indexData.Calendar = append(indexData.Calendar, Link{file.Name(), address})
+			} else {
+				indexData.Misc = append(indexData.Misc, Link{file.Name(), address})
+			}
+			//currentLink := store + file.Name() + "/" + file.Name() + ".html"
+			//allNotes = append(allNotes, currentLink)
 		}
 	}
-	fmt.Println(allNotes)
+	fmt.Println(indexData)
+	tmpl := template.Must(template.ParseFiles(templates+"index.html"))
+
+	os.Chdir(store)
+	f, err = os.Create("index.html")
+	check(err)
+	defer f.Close()
+
+	err = tmpl.Execute(f, indexData)
+	check(err)
 }
 
-func RenderNotes(store string) {
+func RenderNotes(store, templates string) {
 
 	f, err := os.Open(store)
 	check(err)
 	fileInfo, err := f.Readdir(-1)
 	f.Close()
 	check(err)
+
+	tmpl := template.Must(template.ParseFiles(templates+"note.html"))
 
 	for _, file := range fileInfo {
 		if file.IsDir() {
 			//fmt.Println(store+file.Name())
-			os.Chdir(store+file.Name())
+			os.Chdir(store + file.Name())
+			renderPage(store, file.Name(), tmpl)
 
-			data, err := ioutil.ReadFile(file.Name()+".md")
-			check(err)
-			html := blackfriday.Run(data)
-
-			f, err := os.Create(file.Name() + ".html")
-			check(err)
-			defer f.Close()
-			_, err = f.Write(html)
-			check(err)
 		}
 	}
 
 	fmt.Println("Exiting renderNotes()")
 }
 
-func sample() {
+func renderPage(store, filename string, tmpl *template.Template) {
+	data, err := ioutil.ReadFile(filename + ".md")
+	check(err)
 
-	input := []byte(`# Title
-## Sub title
-### Sub sub title
-This is some text *with italics* and **bolds**
-`)
+	f, err := os.Create(filename + ".html")
+	check(err)
+	defer f.Close()
 
-	html := string(blackfriday.Run(input))
-	fmt.Println(html)
+	current := Page{Title: filename, Body: template.HTML(blackfriday.Run(data))}
+	err = tmpl.Execute(f, current)
+	check(err)
 }
 
 func noteExists(p, fn string) error {
-	os.Chdir(p+fn)
+	os.Chdir(p + fn)
 	_, err := os.OpenFile(p+fn+"/"+fn+".md", os.O_RDWR, 0666)
 	return err
 }

@@ -1,5 +1,6 @@
 {
 	"storagePath" : "/path/to/store/notes/",
+	"templatesPath" :"/path/to/store/templates/", 
 	"editor" : "vi",
 	"editorArgs" : "+normal G$"
 }

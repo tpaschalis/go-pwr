@@ -7,7 +7,22 @@
 </head>
 
 <body>
-{{.Note}}
+
+<h2> Calendar Pages</h2>
+<ul>
+	{{ range .Calendar }}
+			<li> <a href="{{.Address}}">{{.Name}}</a> </li>
+	{{ end }}
+</ul>
+
+
+<h2> Misc Pages</h2>
+<ul>
+	{{ range .Misc }}
+			<li> <a href="{{.Address}}">{{.Name}}</a> </li>
+	{{ end }}
+</ul>
+
 </body>
 
 </html>
