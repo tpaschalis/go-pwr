@@ -38,8 +38,7 @@ func BuildIndex(store, templates string) {
 	indexData.Title = "NotezIndex"
 	for _, file := range fileInfo {
 
-		if file.IsDir() && noteExists(store, file.Name()) == nil {
-			//address := store + file.Name() + "/" + file.Name() + ".html"
+		if file.IsDir() && pageExists(store, file.Name()) == nil {
 			address := file.Name() + "/" + file.Name() + ".html"
 			if re.MatchString(file.Name()) {
 				indexData.Calendar = append(indexData.Calendar, Link{file.Name(), address})
@@ -62,7 +61,7 @@ func BuildIndex(store, templates string) {
 	check(err)
 }
 
-func RenderNotes(store, templates string) {
+func RenderPages(store, templates string) {
 
 	f, err := os.Open(store)
 	check(err)
@@ -102,7 +101,7 @@ func renderPage(store, filename string, tmpl *template.Template, pageRenderer bl
 	check(err)
 }
 
-func noteExists(p, fn string) error {
+func pageExists(p, fn string) error {
 	os.Chdir(p + fn)
 	_, err := os.OpenFile(p+fn+"/"+fn+".md", os.O_RDWR, 0666)
 	return err

@@ -19,6 +19,8 @@ func main() {
 	setupFlags(flag.CommandLine)
 	confFlag := flag.String("c", "", "-c					Change path for config.json")
 	renderFlag := flag.Bool("v", false, "-v                    Render notes so they're accessible by a browser")
+	newPageFlag := flag.String("new", "", "-new		create a new empty note page")
+	delPageFlag := flag.String("del", "", "-del		delete a page and all of its contents")
 
 	flag.Parse()
 	args := flag.Args()
@@ -43,26 +45,35 @@ func main() {
 	//check(err)
 	if *renderFlag == true {
 		pwrf.BuildIndex(storagePath, templatesPath)
-		pwrf.RenderNotes(storagePath, templatesPath)
+		pwrf.RenderPages(storagePath, templatesPath)
+		os.Exit(0)
+	}
+
+	if *newPageFlag != "" {
+		createPage := strings.ToLower(*newPageFlag)
+		pwrf.CreateEmptyPage(storagePath, createPage)
+		os.Exit(0)
+	}
+
+
+	if *delPageFlag != "" {
+		deletePage := strings.ToLower(*delPageFlag)
+		pwrf.DeleteNamedPage(storagePath, deletePage)
 		os.Exit(0)
 	}
 
 	if len(args) == 0 || strings.ToLower(args[0]) == "today" {
-		pwrf.OpenTodayNote(storagePath, editor, editorArgs)
+		pwrf.OpenTodayPage(storagePath, editor, editorArgs)
 	}
 
 	if len(args) != 0 {
 		switch strings.ToLower(args[0]) {
 		case "yesterday":
-			pwrf.OpenYesterdayNote(storagePath, editor, editorArgs)
+			pwrf.OpenYesterdayPage(storagePath, editor, editorArgs)
 		default:
-			pwrf.OpenNamedNote(storagePath, strings.ToLower(args[0]), editor, editorArgs)
+			pwrf.OpenNamedPage(storagePath, strings.ToLower(args[0]), editor, editorArgs)
 		}
 	}
-
-
-
-
 
 	_ = confFlag
 	fmt.Println("")
@@ -104,3 +115,4 @@ func checkEarlyExit(args []string, c string) (err error) {
 	//}
 	return fmt.Errorf("No such argument is available")
 }
+
