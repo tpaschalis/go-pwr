@@ -22,18 +22,20 @@ All command-line arguments are case-insensitive and pages are created using all-
 Let's check it out in action!
 
 ```
-$ pwr 				# When `pwr` is called with no argument, or with argument "today", it will create or open
-$ pwr today			# a 'page' with today's date as "YYYY-MM-DD.md", where you can take Markdown notes, 
-					# or check your existing ones
+$ pwr 			# When `pwr` is called with no argument, or with argument "today", it will create or open
+$ pwr today		# a 'page' with today's date as "YYYY-MM-DD.md", where you can take Markdown notes, 
+			# or check your existing ones
 
 $ pwr yesterday 	# Same thing for yesterday and tomorrow, really useful when you
 $ pwr tomorrow		# need to remember where you left off, or what's on today's tasklist
 
-$ pwr <subject>		# You can create and/or access a named page by specifying any other word
-$ pwr linux			# Here you will create a new "linux.md" page, or access your previous notes
-					# under the "linux.md" file
+$ pwr <subject>		# You can create and/or access a named page by specifying any other keyword
+$ pwr linux		# Here you will create a new "linux.md" page, or access your previous notes
+			# under the "linux.md" file
 
-$ pwr -v 			# -v, short for view, will render all of your created 'pages', as well as a structured index, so you can access them from a browser
+$ pwr -v 		# -v, short for view, will render all of your created 'pages', 
+			# as well as a structured index, so you can access them from a browser
+$ pwr -v			
 Access your library by opening the following link
 /home/paschalis/pwr-notes/index.html
 Rendering complete!
