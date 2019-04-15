@@ -35,7 +35,7 @@ func BuildIndex(store, templates string) {
 	//fmt.Printf("Pattern: %v\n", re.String())
 
 	var indexData Index
-	indexData.Title = "NotezIndex"
+	indexData.Title = "pwr index"
 	for _, file := range fileInfo {
 
 		if file.IsDir() && pageExists(store, file.Name()) == nil {
@@ -49,7 +49,7 @@ func BuildIndex(store, templates string) {
 			//allNotes = append(allNotes, currentLink)
 		}
 	}
-	fmt.Println(indexData)
+	//fmt.Println(indexData)
 	tmpl := template.Must(template.ParseFiles(templates+"index.html"))
 
 	os.Chdir(store)
@@ -59,6 +59,7 @@ func BuildIndex(store, templates string) {
 
 	err = tmpl.Execute(f, indexData)
 	check(err)
+	fmt.Printf("Access your library by opening the following link\n%sindex.html\n", store)
 }
 
 func RenderPages(store, templates string) {
@@ -85,7 +86,7 @@ func RenderPages(store, templates string) {
 		}
 	}
 
-	fmt.Println("Exiting renderNotes()")
+	fmt.Println("Rendering complete!")
 }
 
 func renderPage(store, filename string, tmpl *template.Template, pageRenderer blackfriday.Renderer) {
