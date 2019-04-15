@@ -7,6 +7,7 @@ import "io/ioutil"
 import "html/template"
 import "regexp"
 
+
 type Page struct {
 	Title string
 	Body  template.HTML
@@ -71,11 +72,16 @@ func RenderNotes(store, templates string) {
 
 	tmpl := template.Must(template.ParseFiles(templates+"note.html"))
 
+	customRenderer := blackfriday.NewHTMLRenderer(
+		blackfriday.HTMLRendererParameters{
+		Flags : blackfriday.CommonHTMLFlags|blackfriday.TOC,
+		})
+
 	for _, file := range fileInfo {
 		if file.IsDir() {
 			//fmt.Println(store+file.Name())
 			os.Chdir(store + file.Name())
-			renderPage(store, file.Name(), tmpl)
+			renderPage(store, file.Name(), tmpl, customRenderer)
 
 		}
 	}
@@ -83,7 +89,7 @@ func RenderNotes(store, templates string) {
 	fmt.Println("Exiting renderNotes()")
 }
 
-func renderPage(store, filename string, tmpl *template.Template) {
+func renderPage(store, filename string, tmpl *template.Template, pageRenderer blackfriday.Renderer) {
 	data, err := ioutil.ReadFile(filename + ".md")
 	check(err)
 
@@ -91,7 +97,7 @@ func renderPage(store, filename string, tmpl *template.Template) {
 	check(err)
 	defer f.Close()
 
-	current := Page{Title: filename, Body: template.HTML(blackfriday.Run(data))}
+	current := Page{Title: filename, Body: template.HTML(blackfriday.Run(data, blackfriday.WithRenderer(pageRenderer)))}
 	err = tmpl.Execute(f, current)
 	check(err)
 }
